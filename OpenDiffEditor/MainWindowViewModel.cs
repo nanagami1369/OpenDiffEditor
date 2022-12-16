@@ -71,33 +71,24 @@ namespace OpenDiffEditor
             OpenVsCodeCommand = new RelayCommand<DiffFileInfo>(diffInfo =>
             {
                 if (diffInfo is null) { return; }
-                var processInfo = diffInfo.Status switch
+                var processArgument = diffInfo.Status switch
                 {
-                    DiffStatus.Add => new ProcessStartInfo()
-                    {
-                        UseShellExecute = true,
-                        FileName = "code",
-                        Arguments = $"--diff {diffInfo.NewFullPath}"
-                    },
-                    DiffStatus.Delete => new ProcessStartInfo()
-                    {
-                        UseShellExecute = true,
-                        FileName = "code",
-                        Arguments = $"--diff {diffInfo.OldFullPath}"
-                    },
-                    DiffStatus.Modified => new ProcessStartInfo()
-                    {
-                        UseShellExecute = true,
-                        FileName = "code",
-                        Arguments = $"--diff {diffInfo.OldFullPath} {diffInfo.NewFullPath}"
-                    },
+                    DiffStatus.Add => $"--diff {diffInfo.NewFullPath}",
+                    DiffStatus.Delete => $"--diff {diffInfo.OldFullPath}",
+                    DiffStatus.Modified => $"--diff {diffInfo.OldFullPath} {diffInfo.NewFullPath}",
                     // それ以外は、null
                     _ => null
                 };
-                if (processInfo is not null)
+                // 引数が無ければ終了
+                if (string.IsNullOrWhiteSpace(processArgument)) { return; }
+
+                var processStartInfo = new ProcessStartInfo()
                 {
-                    Process.Start(processInfo);
-                }
+                    UseShellExecute = true,
+                    FileName = "code",
+                    Arguments = processArgument
+                };
+                Process.Start(processStartInfo);
             });
         }
 
