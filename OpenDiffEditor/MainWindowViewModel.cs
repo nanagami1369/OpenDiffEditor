@@ -29,6 +29,8 @@ namespace OpenDiffEditor
         public ObservableCollection<DiffFileInfo> FileInfoList { get; } = new ObservableCollection<DiffFileInfo>();
 
         public IRelayCommand ReloadCommand { get; }
+        public IRelayCommand<string> DropOldDirPathCommand { get; }
+        public IRelayCommand<string> DropNewDirPathCommand { get; }
 
         public MainWindowViewModel()
         {
@@ -49,6 +51,20 @@ namespace OpenDiffEditor
                     FileInfoList.Add(path);
                 }
 
+            });
+            DropOldDirPathCommand = new RelayCommand<string>((path) =>
+            {
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    OldDirectoryPath = path;
+                }
+            });
+            DropNewDirPathCommand = new RelayCommand<string>((path) =>
+            {
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    NewDirectoryPath = path;
+                }
             });
         }
 
