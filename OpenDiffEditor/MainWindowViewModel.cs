@@ -15,14 +15,14 @@ namespace OpenDiffEditor
         private string _oldDirectoryPath = "";
         public string OldDirectoryPath
         {
-            get => _oldDirectoryPath;
+            get => _oldDirectoryPath.Trim('\"');
             set => SetProperty(ref _oldDirectoryPath, value);
         }
 
         private string _newDirectoryPath = "";
         public string NewDirectoryPath
         {
-            get => _newDirectoryPath;
+            get => _newDirectoryPath.Trim('\"');
             set => SetProperty(ref _newDirectoryPath, value);
         }
 
