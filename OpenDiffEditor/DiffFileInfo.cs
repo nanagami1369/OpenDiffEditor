@@ -30,14 +30,8 @@ namespace OpenDiffEditor
             DiffStatus status;
             if (oldFileIsExist && newFileIsExist)
             {
-                if (File.ReadAllBytes(oldFullPath).SequenceEqual(File.ReadAllBytes(newFullPath)))
-                {
-                    status = DiffStatus.None;
-                }
-                else
-                {
-                    status = DiffStatus.Modified;
-                }
+                var isModified = !File.ReadAllBytes(oldFullPath).SequenceEqual(File.ReadAllBytes(newFullPath));
+                status = isModified ? DiffStatus.Modified : DiffStatus.None;
             }
             else
             {
