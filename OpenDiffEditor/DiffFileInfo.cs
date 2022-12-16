@@ -20,6 +20,9 @@ namespace OpenDiffEditor
 
         private static string FullPath(string rootDir, string path) => $"{rootDir}\\{path}";
 
+        public string OldFullPath => FullPath(OldDirPath, Path);
+        public string NewFullPath => FullPath(NewDirPath, Path);
+
         public static DiffFileInfo Create(string oldDirPath, string newDirPath, string path)
         {
             var oldFullPath = FullPath(oldDirPath, path);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,7 @@ namespace OpenDiffEditor
         public IRelayCommand ReloadCommand { get; }
         public IRelayCommand<string> DropOldDirPathCommand { get; }
         public IRelayCommand<string> DropNewDirPathCommand { get; }
+        public IRelayCommand<DiffFileInfo> OpenVsCodeCommand { get; }
 
         public MainWindowViewModel()
         {
@@ -64,6 +66,37 @@ namespace OpenDiffEditor
                 if (!string.IsNullOrWhiteSpace(path))
                 {
                     NewDirectoryPath = path;
+                }
+            });
+            OpenVsCodeCommand = new RelayCommand<DiffFileInfo>(diffInfo =>
+            {
+                if (diffInfo is null) { return; }
+                var processInfo = diffInfo.Status switch
+                {
+                    DiffStatus.Add => new ProcessStartInfo()
+                    {
+                        UseShellExecute = true,
+                        FileName = "code",
+                        Arguments = $"--diff {diffInfo.NewFullPath}"
+                    },
+                    DiffStatus.Delete => new ProcessStartInfo()
+                    {
+                        UseShellExecute = true,
+                        FileName = "code",
+                        Arguments = $"--diff {diffInfo.OldFullPath}"
+                    },
+                    DiffStatus.Modified => new ProcessStartInfo()
+                    {
+                        UseShellExecute = true,
+                        FileName = "code",
+                        Arguments = $"--diff {diffInfo.OldFullPath} {diffInfo.NewFullPath}"
+                    },
+                    // それ以外は、null
+                    _ => null
+                };
+                if (processInfo is not null)
+                {
+                    Process.Start(processInfo);
                 }
             });
         }

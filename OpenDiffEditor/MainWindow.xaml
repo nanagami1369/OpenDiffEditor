@@ -44,6 +44,12 @@
                     <TextBlock>[<Run Text="{Binding StatusString, Mode=OneWay}" />] <Run Text="{Binding Path, Mode=OneWay}" /></TextBlock>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="b:DoubleClickProperty.Command" Value="{Binding Path=DataContext.OpenVsCodeCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                    <Setter Property="b:DoubleClickProperty.CommandParameter" Value="{Binding}" />
+                </Style>
+            </ListBox.ItemContainerStyle>
         </ListBox>
     </Grid>
 </Window>
