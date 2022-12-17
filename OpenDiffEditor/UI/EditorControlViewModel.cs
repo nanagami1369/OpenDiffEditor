@@ -87,9 +87,9 @@ public class EditorControlViewModel : ObservableObject
             if (diffInfo is null) { return; }
             var processArgument = diffInfo.Status switch
             {
-                DiffStatus.Add => $"--diff {diffInfo.NewFullPath}",
-                DiffStatus.Delete => $"--diff {diffInfo.OldFullPath}",
-                DiffStatus.Modified => $"--diff {diffInfo.OldFullPath} {diffInfo.NewFullPath}",
+                DiffStatus.Add => $"/c code --diff {diffInfo.NewFullPath}",
+                DiffStatus.Delete => $"/c code --diff {diffInfo.OldFullPath}",
+                DiffStatus.Modified => $"/c code --diff {diffInfo.OldFullPath} {diffInfo.NewFullPath}",
                 // それ以外は、null
                 _ => null
             };
@@ -98,9 +98,9 @@ public class EditorControlViewModel : ObservableObject
 
             var processStartInfo = new ProcessStartInfo()
             {
-                UseShellExecute = true,
-                FileName = "code",
-                Arguments = processArgument
+                FileName = "C:\\WINDOWS\\system32\\cmd.exe",
+                Arguments = processArgument,
+                CreateNoWindow = true,
             };
             Process.Start(processStartInfo);
         });
