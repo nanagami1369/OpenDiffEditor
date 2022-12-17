@@ -1,0 +1,79 @@
+<!--  Copyright (c) Microsoft Corporation and Contributors.  -->
+<!--  Licensed under the MIT License.  -->
+
+<UserControl
+    x:Class="OpenDiffEditor.UI.EditorControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="using:OpenDiffEditor.Behavior"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OpenDiffEditor"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:OpenDiffEditor.UI"
+    x:Name="editorUI"
+    mc:Ignorable="d">
+    <UserControl.DataContext>
+        <ui:EditorControlViewModel />
+    </UserControl.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30px" />
+            <RowDefinition Height="30px" />
+            <RowDefinition Height="30px" />
+            <RowDefinition Height="30px" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBox
+            Grid.Row="0"
+            Background="Transparent"
+            FontSize="14px"
+            b:FilePathDropAttachedProperty.Command="{Binding DropOldDirPathCommand}"
+            Text="{Binding OldDirectoryPath, Mode=TwoWay}" />
+        <TextBox
+            Grid.Row="1"
+            Background="Transparent"
+            FontSize="14px"
+            b:FilePathDropAttachedProperty.Command="{Binding DropNewDirPathCommand}"
+            Text="{Binding NewDirectoryPath, Mode=TwoWay}" />
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Stretch"
+            Orientation="Horizontal">
+            <CheckBox
+                Margin="5"
+                Content="追加"
+                IsChecked="{Binding IsFilterAdd, Mode=TwoWay}" />
+            <CheckBox
+                Margin="5"
+                Content="削除"
+                IsChecked="{Binding IsFilterDelete, Mode=TwoWay}" />
+            <CheckBox
+                Margin="5"
+                Content="変更"
+                IsChecked="{Binding IsFilterModified, Mode=TwoWay}" />
+        </StackPanel>
+        <Button
+            Grid.Row="3"
+            HorizontalAlignment="Stretch"
+            Command="{Binding ReloadCommand}"
+            Content="更新"
+            FontSize="14px" />
+        <ListBox
+            x:Name="fileDiffList"
+            Grid.Row="4"
+            b:DoubleClickProperty.Command="{Binding OpenVsCodeCommand}"
+            b:DoubleClickProperty.CommandParameter="{Binding ElementName=fileDiffList, Path=SelectedItem}"
+            ItemsSource="{Binding FileInfoList}">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="local:DiffFileInfo">
+                    <TextBlock>
+                        <Run Text="[" />
+                        <Run Text="{Binding StatusString}" />
+                        <Run Text="]" />
+                        <Run Text="{Binding Path}" />
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

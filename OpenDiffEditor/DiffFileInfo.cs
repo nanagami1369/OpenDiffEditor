@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,7 +41,7 @@ public class DiffFileInfo
             status = newFileIsExist ? DiffStatus.Add : DiffStatus.Delete;
         }
 
-        return new DiffFileInfo(oldDirPath, newDirPath, path, status);
+        return new DiffFileInfo(oldDirPath, newDirPath, $"\\{path.TrimStart('\\')}", status);
     }
 
     private DiffFileInfo(string oldDirPath, string newDirPath, string path, DiffStatus status)

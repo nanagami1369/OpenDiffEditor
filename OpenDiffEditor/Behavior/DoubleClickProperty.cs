@@ -1,7 +1,8 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 namespace OpenDiffEditor.Behavior;
 
@@ -15,8 +16,8 @@ public class DoubleClickProperty
             new PropertyMetadata(null, (d, e) =>
             {
                 if (d is not Control control) { throw new ArgumentException("control 属性のコントロールにつけてください"); }
-                control.MouseDoubleClick -= DoubleClickCommand;
-                control.MouseDoubleClick += DoubleClickCommand;
+                control.DoubleTapped -= DoubleClickCommand;
+                control.DoubleTapped += DoubleClickCommand;
             })
         );
 
@@ -41,7 +42,7 @@ public class DoubleClickProperty
         => obj.GetValue(CommandParameterProperty);
 
 
-    private static void DoubleClickCommand(object sender, MouseButtonEventArgs e)
+    private static void DoubleClickCommand(object sender, DoubleTappedRoutedEventArgs e)
     {
         if (sender is not DependencyObject d) { return; }
         var command = GetCommand(d);

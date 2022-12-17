@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Shapes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-namespace OpenDiffEditor;
 
-public class MainWindowViewModel : ObservableObject
+namespace OpenDiffEditor.UI;
+
+public class EditorControlViewModel : ObservableObject
 {
     private string _oldDirectoryPath = "";
     public string OldDirectoryPath
@@ -53,7 +49,7 @@ public class MainWindowViewModel : ObservableObject
     public IRelayCommand<string> DropNewDirPathCommand { get; }
     public IRelayCommand<DiffFileInfo> OpenVsCodeCommand { get; }
 
-    public MainWindowViewModel()
+    public EditorControlViewModel()
     {
         ReloadCommand = new RelayCommand(() =>
         {
@@ -71,7 +67,6 @@ public class MainWindowViewModel : ObservableObject
             {
                 FileInfoList.Add(path);
             }
-
         });
         DropOldDirPathCommand = new RelayCommand<string>((path) =>
         {
