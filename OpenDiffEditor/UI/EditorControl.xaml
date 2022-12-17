@@ -63,6 +63,8 @@
             Grid.Row="4"
             b:DoubleClickProperty.Command="{Binding OpenVsCodeCommand}"
             b:DoubleClickProperty.CommandParameter="{Binding ElementName=fileDiffList, Path=SelectedItem}"
+            b:EnterKeyDownProperty.Command="{Binding OpenVsCodeCommand}"
+            b:EnterKeyDownProperty.CommandParameter="{Binding ElementName=fileDiffList, Path=SelectedItem}"
             ItemsSource="{Binding FileInfoList}">
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="local:DiffFileInfo">
