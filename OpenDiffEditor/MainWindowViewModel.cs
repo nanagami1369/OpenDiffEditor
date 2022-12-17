@@ -27,6 +27,25 @@ public class MainWindowViewModel : ObservableObject
         set => SetProperty(ref _newDirectoryPath, value);
     }
 
+    private bool _isFilterAdd = true;
+    public bool IsFilterAdd
+    {
+        get => _isFilterAdd;
+        set => SetProperty(ref _isFilterAdd, value);
+    }
+    private bool _isFilterDelete = true;
+    public bool IsFilterDelete
+    {
+        get => _isFilterDelete;
+        set => SetProperty(ref _isFilterDelete, value);
+    }
+    private bool _isFilterModified = true;
+    public bool IsFilterModified
+    {
+        get => _isFilterModified;
+        set => SetProperty(ref _isFilterModified, value);
+    }
+
     public ObservableCollection<DiffFileInfo> FileInfoList { get; } = new ObservableCollection<DiffFileInfo>();
 
     public IRelayCommand ReloadCommand { get; }
@@ -48,7 +67,7 @@ public class MainWindowViewModel : ObservableObject
 
             var diffFileInfo = oldPaths.Union(newPaths).Select(path => DiffFileInfo.Create(OldDirectoryPath, NewDirectoryPath, path));
             FileInfoList.Clear();
-            foreach (var path in diffFileInfo)
+            foreach (var path in diffFileInfo.Where(DiffStatusFilter))
             {
                 FileInfoList.Add(path);
             }
@@ -92,4 +111,14 @@ public class MainWindowViewModel : ObservableObject
         });
     }
 
+    private bool DiffStatusFilter(DiffFileInfo info)
+    {
+        return info.Status switch
+        {
+            DiffStatus.Add => IsFilterAdd,
+            DiffStatus.Delete => IsFilterDelete,
+            DiffStatus.Modified => IsFilterModified,
+            _ => false
+        };
+    }
 }

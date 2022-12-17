@@ -18,6 +18,7 @@
             <RowDefinition Height="24px" />
             <RowDefinition Height="24px" />
             <RowDefinition Height="24px" />
+            <RowDefinition Height="24px" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TextBox
@@ -29,16 +30,34 @@
         <TextBox
             Grid.Row="1"
             b:FilePathDropAttachedProperty.Command="{Binding DropNewDirPathCommand}"
+            AllowDrop="True"
             Background="Transparent"
             FontSize="14px"
-            AllowDrop="True"
             Text="{Binding NewDirectoryPath, UpdateSourceTrigger=LostFocus}" />
-        <Button
+        <WrapPanel
             Grid.Row="2"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center"
+            Orientation="Horizontal">
+            <CheckBox
+                Margin="5"
+                Content="追加"
+                IsChecked="{Binding IsFilterAdd}" />
+            <CheckBox
+                Margin="5"
+                Content="削除"
+                IsChecked="{Binding IsFilterDelete}" />
+            <CheckBox
+                Margin="5"
+                Content="変更"
+                IsChecked="{Binding IsFilterModified}" />
+        </WrapPanel>
+        <Button
+            Grid.Row="3"
             Command="{Binding ReloadCommand}"
             Content="更新"
             FontSize="14px" />
-        <ListBox Grid.Row="3" ItemsSource="{Binding FileInfoList}">
+        <ListBox Grid.Row="4" ItemsSource="{Binding FileInfoList}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type local:DiffFileInfo}">
                     <TextBlock>[<Run Text="{Binding StatusString, Mode=OneWay}" />] <Run Text="{Binding Path, Mode=OneWay}" /></TextBlock>
