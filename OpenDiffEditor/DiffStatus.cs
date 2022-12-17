@@ -27,4 +27,16 @@ public static class DiffStatusExpansion
             _ => throw new ArgumentException("Unknown Status"),
         };
     }
+
+    public static string ToIcon(this DiffStatus status)
+    {
+        return status switch
+        {
+            DiffStatus.None => "⬜",
+            DiffStatus.Add => "🟨",
+            DiffStatus.Delete => "🟥",
+            DiffStatus.Modified => "🟩",
+            _ => throw new ArgumentException("Unknown Status"),
+        };
+    }
 }

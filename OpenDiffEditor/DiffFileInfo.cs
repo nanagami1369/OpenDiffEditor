@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,6 +16,7 @@ public class DiffFileInfo
     public string Path { get; }
     public DiffStatus Status { get; }
     public string StatusString => Status.ToStringLocal();
+    public string StatusIcon => Status.ToIcon();
 
 
     private static string FullPath(string rootDir, string path) => $"{rootDir}\\{path}";

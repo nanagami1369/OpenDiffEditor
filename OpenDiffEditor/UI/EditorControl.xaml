@@ -1,4 +1,4 @@
-<!--  Copyright (c) Microsoft Corporation and Contributors.  -->
+﻿<!--  Copyright (c) Microsoft Corporation and Contributors.  -->
 <!--  Licensed under the MIT License.  -->
 
 <UserControl
@@ -68,6 +68,7 @@
                 <DataTemplate x:DataType="local:DiffFileInfo">
                     <TextBlock>
                         <Run Text="[" />
+                        <Run Text="{Binding StatusIcon}" />
                         <Run Text="{Binding StatusString}" />
                         <Run Text="]" />
                         <Run Text="{Binding Path}" />
