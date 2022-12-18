@@ -9,8 +9,8 @@ namespace OpenDiffEditor.Model;
 
 public class DiffFileInfo
 {
-    private string OldDirPath { get; }
-    private string NewDirPath { get; }
+    private RootPathInfo OldRootPathInfo { get; }
+    private RootPathInfo NewRootPathInfo { get; }
 
 
     public string Path { get; }
@@ -18,38 +18,48 @@ public class DiffFileInfo
     public string StatusString => Status.ToStringLocal();
     public string StatusIcon => Status.ToIcon();
 
-
-    private static string FullPath(string rootDir, string path) => $"{rootDir}\\{path}";
-
-    public string OldFullPath => FullPath(OldDirPath, Path);
-    public string NewFullPath => FullPath(NewDirPath, Path);
-
-    public static DiffFileInfo Create(string oldDirPath, string newDirPath, string path)
+    private DiffFileInfo(RootPathInfo oldPathInfo, RootPathInfo newPathInfo, string path, DiffStatus status)
     {
-        var oldFullPath = FullPath(oldDirPath, path);
-        var newFullPath = FullPath(newDirPath, path);
+        OldRootPathInfo = oldPathInfo;
+        NewRootPathInfo = newPathInfo;
+        Path = path;
+        Status = status;
+    }
+
+    public static DiffFileInfo Create(RootPathInfo oldRootPathInfo, RootPathInfo newRootPathInfo, string path)
+    {
         // Diffステータス設定
-        var oldFileIsExist = File.Exists(oldFullPath);
-        var newFileIsExist = File.Exists(newFullPath);
+        var oldFileIsExist = oldRootPathInfo.Exist(path);
+        var newFileIsExist = newRootPathInfo.Exist(path);
         DiffStatus status;
         if (oldFileIsExist && newFileIsExist)
         {
-            var isModified = !File.ReadAllBytes(oldFullPath).SequenceEqual(File.ReadAllBytes(newFullPath));
+            var isModified = !oldRootPathInfo.ReadAllBytes(path).SequenceEqual(newRootPathInfo.ReadAllBytes(path));
             status = isModified ? DiffStatus.Modified : DiffStatus.None;
         }
         else
         {
             status = newFileIsExist ? DiffStatus.Add : DiffStatus.Delete;
         }
-
-        return new DiffFileInfo(oldDirPath, newDirPath, $"\\{path.TrimStart('\\')}", status);
+        return new DiffFileInfo(oldRootPathInfo, newRootPathInfo, path, status);
     }
 
-    private DiffFileInfo(string oldDirPath, string newDirPath, string path, DiffStatus status)
+    public delegate void ExecOpenEditor(string oldFullPath, string newFullPath);
+
+    public void OpenDiffEditor(ExecOpenEditor execOpenEditorCommand)
     {
-        OldDirPath = oldDirPath;
-        NewDirPath = newDirPath;
-        Path = path;
-        Status = status;
+        var oldFullPath = OldRootPathInfo.Type switch
+        {
+            RootPathType.Directory => $"{OldRootPathInfo.RootPath}\\{Path}",
+            RootPathType.Zip => Util.CreateZipArchiveDataToTempFile(OldRootPathInfo.RootPath, Path.Trim('\\').Replace('\\', '/')),
+            _ => throw new NotSupportedException("zipとフォルダしか対応してません")
+        };
+        var newFullPath = NewRootPathInfo.Type switch
+        {
+            RootPathType.Directory => $"{NewRootPathInfo.RootPath}\\{Path}",
+            RootPathType.Zip => Util.CreateZipArchiveDataToTempFile(NewRootPathInfo.RootPath, Path.Trim('\\').Replace('\\', '/')),
+            _ => throw new NotSupportedException("zipとフォルダしか対応してません")
+        };
+        execOpenEditorCommand(oldFullPath, newFullPath);
     }
 }

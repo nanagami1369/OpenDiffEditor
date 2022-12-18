@@ -27,14 +27,14 @@
             Grid.Row="0"
             Background="Transparent"
             FontSize="14px"
-            b:FilePathDropAttachedProperty.Command="{Binding DropOldDirPathCommand}"
-            Text="{Binding OldDirectoryPath, Mode=TwoWay}" />
+            b:FilePathDropAttachedProperty.Command="{Binding DropOldRootPathCommand}"
+            Text="{Binding OldRootPath, Mode=TwoWay}" />
         <TextBox
             Grid.Row="1"
             Background="Transparent"
             FontSize="14px"
-            b:FilePathDropAttachedProperty.Command="{Binding DropNewDirPathCommand}"
-            Text="{Binding NewDirectoryPath, Mode=TwoWay}" />
+            b:FilePathDropAttachedProperty.Command="{Binding DropNewRootPathCommand}"
+            Text="{Binding NewRootPath, Mode=TwoWay}" />
         <StackPanel
             Grid.Row="2"
             HorizontalAlignment="Stretch"

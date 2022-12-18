@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using OpenDiffEditor.Factory;
 using OpenDiffEditor.Model;
 
 namespace OpenDiffEditor.UI;
 
 public class EditorControlViewModel : ObservableObject
 {
-    private string _oldDirectoryPath = "";
-    public string OldDirectoryPath
+    private string _oldRootPath = "";
+    public string OldRootPath
     {
-        get => _oldDirectoryPath.Trim('\"');
-        set => SetProperty(ref _oldDirectoryPath, value);
+        get => _oldRootPath.Trim('\"');
+        set => SetProperty(ref _oldRootPath, value);
     }
 
-    private string _newDirectoryPath = "";
-    public string NewDirectoryPath
+    private string _newRootPath = "";
+    public string NewRootPath
     {
-        get => _newDirectoryPath.Trim('\"');
-        set => SetProperty(ref _newDirectoryPath, value);
+        get => _newRootPath.Trim('\"');
+        set => SetProperty(ref _newRootPath, value);
     }
 
     private bool _isFilterAdd = true;
@@ -47,64 +47,60 @@ public class EditorControlViewModel : ObservableObject
     public ObservableCollection<DiffFileInfo> FileInfoList { get; } = new ObservableCollection<DiffFileInfo>();
 
     public IRelayCommand ReloadCommand { get; }
-    public IRelayCommand<string> DropOldDirPathCommand { get; }
-    public IRelayCommand<string> DropNewDirPathCommand { get; }
+    public IRelayCommand<string> DropOldRootPathCommand { get; }
+    public IRelayCommand<string> DropNewRootPathCommand { get; }
     public IRelayCommand<DiffFileInfo> OpenVsCodeCommand { get; }
 
     public EditorControlViewModel()
     {
         ReloadCommand = new RelayCommand(() =>
         {
-            if (OldDirectoryPath is null || !Directory.Exists(OldDirectoryPath)) { return; }
-            if (NewDirectoryPath is null || !Directory.Exists(NewDirectoryPath)) { return; }
-
-            var oldPaths = Directory.EnumerateFiles(OldDirectoryPath, "*", SearchOption.AllDirectories)
-                .Select(path => path.Replace(OldDirectoryPath, ""));
-            var newPaths = Directory.EnumerateFiles(NewDirectoryPath, "*", SearchOption.AllDirectories)
-                .Select(path => path.Replace(NewDirectoryPath, ""));
-
-            var diffFileInfo = oldPaths.Union(newPaths).Select(path => DiffFileInfo.Create(OldDirectoryPath, NewDirectoryPath, path));
+            if (!RootPathInfo.IsRootPath(OldRootPath)) { return; }
+            if (!RootPathInfo.IsRootPath(NewRootPath)) { return; }
+            var diffFileInfo = DiffFileInfoFactory.Factory(OldRootPath, NewRootPath);
             FileInfoList.Clear();
             foreach (var path in diffFileInfo.Where(DiffStatusFilter))
             {
                 FileInfoList.Add(path);
             }
         });
-        DropOldDirPathCommand = new RelayCommand<string>((path) =>
+        DropOldRootPathCommand = new RelayCommand<string>((path) =>
         {
             if (!string.IsNullOrWhiteSpace(path))
             {
-                OldDirectoryPath = path;
+                OldRootPath = path;
             }
         });
-        DropNewDirPathCommand = new RelayCommand<string>((path) =>
+        DropNewRootPathCommand = new RelayCommand<string>((path) =>
         {
             if (!string.IsNullOrWhiteSpace(path))
             {
-                NewDirectoryPath = path;
+                NewRootPath = path;
             }
         });
         OpenVsCodeCommand = new RelayCommand<DiffFileInfo>(diffInfo =>
         {
             if (diffInfo is null) { return; }
-            var processArgument = diffInfo.Status switch
+            diffInfo.OpenDiffEditor((oldFullPath, newFullPath) =>
             {
-                DiffStatus.Add => $"/c code --diff {diffInfo.NewFullPath}",
-                DiffStatus.Delete => $"/c code --diff {diffInfo.OldFullPath}",
-                DiffStatus.Modified => $"/c code --diff {diffInfo.OldFullPath} {diffInfo.NewFullPath}",
-                DiffStatus.None => null,
-                _ => throw new NotSupportedException("unknown status")
-            };
-            // 引数が無ければ終了
-            if (string.IsNullOrWhiteSpace(processArgument)) { return; }
-
-            var processStartInfo = new ProcessStartInfo()
-            {
-                FileName = "C:\\WINDOWS\\system32\\cmd.exe",
-                Arguments = processArgument,
-                CreateNoWindow = true,
-            };
-            Process.Start(processStartInfo);
+                var processArgument = diffInfo.Status switch
+                {
+                    DiffStatus.Add => $"/c code --diff {oldFullPath}",
+                    DiffStatus.Delete => $"/c code --diff {oldFullPath}",
+                    DiffStatus.Modified => $"/c code --diff {oldFullPath} {newFullPath}",
+                    DiffStatus.None => null,
+                    _ => throw new NotSupportedException("unknown status")
+                };
+                // 引数が無ければ終了
+                if (string.IsNullOrWhiteSpace(processArgument)) { return; }
+                var processStartInfo = new ProcessStartInfo()
+                {
+                    FileName = "C:\\WINDOWS\\system32\\cmd.exe",
+                    Arguments = processArgument,
+                    CreateNoWindow = true,
+                };
+                Process.Start(processStartInfo);
+            });
         });
     }
 
