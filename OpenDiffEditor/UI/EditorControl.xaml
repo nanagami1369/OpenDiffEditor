@@ -5,9 +5,9 @@
     x:Class="OpenDiffEditor.UI.EditorControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:b="using:OpenDiffEditor.Behavior"
+    xmlns:b="using:OpenDiffEditor.UI.Behavior"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:OpenDiffEditor"
+    xmlns:model="using:OpenDiffEditor.Model"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="using:OpenDiffEditor.UI"
     x:Name="editorUI"
@@ -67,7 +67,7 @@
             b:EnterKeyDownProperty.CommandParameter="{Binding ElementName=fileDiffList, Path=SelectedItem}"
             ItemsSource="{Binding FileInfoList}">
             <ListBox.ItemTemplate>
-                <DataTemplate x:DataType="local:DiffFileInfo">
+                <DataTemplate x:DataType="model:DiffFileInfo">
                     <TextBlock>
                         <Run Text="[" />
                         <Run Text="{Binding StatusIcon}" />

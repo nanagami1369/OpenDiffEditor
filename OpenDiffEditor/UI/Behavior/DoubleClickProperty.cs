@@ -3,22 +3,21 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Windows.System;
 
-namespace OpenDiffEditor.Behavior;
+namespace OpenDiffEditor.UI.Behavior;
 
-public class EnterKeyDownProperty
+public class DoubleClickProperty
 {
     public static readonly DependencyProperty CommandProperty
         = DependencyProperty.RegisterAttached(
             "Command",
             typeof(ICommand),
-            typeof(EnterKeyDownProperty),
+            typeof(DoubleClickProperty),
             new PropertyMetadata(null, (d, e) =>
             {
                 if (d is not Control control) { throw new ArgumentException("control 属性のコントロールにつけてください"); }
-                control.PreviewKeyDown -= PreviewKeyDownCommand;
-                control.PreviewKeyDown += PreviewKeyDownCommand;
+                control.DoubleTapped -= DoubleClickCommand;
+                control.DoubleTapped += DoubleClickCommand;
             })
         );
 
@@ -32,7 +31,7 @@ public class EnterKeyDownProperty
     = DependencyProperty.RegisterAttached(
         "CommandParameter",
         typeof(object),
-        typeof(EnterKeyDownProperty),
+        typeof(DoubleClickProperty),
         new PropertyMetadata(null)
     );
 
@@ -43,17 +42,14 @@ public class EnterKeyDownProperty
         => obj.GetValue(CommandParameterProperty);
 
 
-    private static void PreviewKeyDownCommand(object sender, KeyRoutedEventArgs e)
+    private static void DoubleClickCommand(object sender, DoubleTappedRoutedEventArgs e)
     {
         if (sender is not DependencyObject d) { return; }
-        if (e.Key != VirtualKey.Enter) { return; }
         var command = GetCommand(d);
         var parameter = GetCommandParameter(d);
         if (command?.CanExecute(parameter) ?? false)
         {
             command.Execute(parameter);
-            e.Handled = true;
-            return;
         }
     }
 }
