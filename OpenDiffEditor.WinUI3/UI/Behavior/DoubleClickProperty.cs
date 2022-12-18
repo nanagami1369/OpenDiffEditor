@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 
-namespace OpenDiffEditor.UI.Behavior;
+namespace OpenDiffEditor.WinUI3.UI.Behavior;
 
 public class DoubleClickProperty
 {

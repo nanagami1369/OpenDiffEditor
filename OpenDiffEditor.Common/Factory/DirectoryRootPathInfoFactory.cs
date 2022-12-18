@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using OpenDiffEditor.Common.Model;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace OpenDiffEditor.Model;
+namespace OpenDiffEditor.Common.Factory;
 
 public class DirectoryRootPathInfoFactory : IRootPathInfoFactory
 {

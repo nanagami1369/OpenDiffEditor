@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using OpenDiffEditor.Factory;
-using OpenDiffEditor.Model;
+using OpenDiffEditor.Common.Factory;
+using OpenDiffEditor.Common.Model;
 
-namespace OpenDiffEditor.UI;
+namespace OpenDiffEditor.WinUI3.UI;
 
 public class EditorControlViewModel : ObservableObject
 {

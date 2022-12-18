@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenDiffEditor.Model;
+namespace OpenDiffEditor.Common.Model;
 
 public enum DiffStatus
 {

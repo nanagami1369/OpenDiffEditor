@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace OpenDiffEditor.UI
+namespace OpenDiffEditor.WinUI3.UI
 {
     public sealed partial class EditorControl : UserControl
     {

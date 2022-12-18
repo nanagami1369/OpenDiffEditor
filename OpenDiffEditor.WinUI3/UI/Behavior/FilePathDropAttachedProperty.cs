@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 
-namespace OpenDiffEditor.UI.Behavior;
+namespace OpenDiffEditor.WinUI3.UI.Behavior;
 
 public class FilePathDropAttachedProperty
 {

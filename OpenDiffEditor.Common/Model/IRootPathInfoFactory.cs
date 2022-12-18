@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OpenDiffEditor.Model
+namespace OpenDiffEditor.Common.Model
 {
     public interface IRootPathInfoFactory
     {

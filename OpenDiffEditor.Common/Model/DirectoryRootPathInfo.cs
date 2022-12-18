@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace OpenDiffEditor.Model;
+namespace OpenDiffEditor.Common.Model;
 
 public class DirectoryRootPathInfo : IRootPathInfo
 {

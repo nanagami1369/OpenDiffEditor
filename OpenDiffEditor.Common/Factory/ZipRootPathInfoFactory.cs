@@ -2,9 +2,9 @@
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using OpenDiffEditor.Model;
+using OpenDiffEditor.Common.Model;
 
-namespace OpenDiffEditor.Factory
+namespace OpenDiffEditor.Common.Factory
 {
     public class ZipRootPathInfoFactory : IRootPathInfoFactory
     {

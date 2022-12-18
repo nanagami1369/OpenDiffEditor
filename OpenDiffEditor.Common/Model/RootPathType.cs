@@ -1,4 +1,4 @@
-﻿namespace OpenDiffEditor.Model
+﻿namespace OpenDiffEditor.Common.Model
 {
     public enum RootPathType
     {
