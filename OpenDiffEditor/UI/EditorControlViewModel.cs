@@ -11,6 +11,8 @@ namespace OpenDiffEditor.UI;
 
 public class EditorControlViewModel : ObservableObject
 {
+    private readonly DiffFileInfoFactory _diffFileInfoFactory;
+
     private string _oldRootPath = "";
     public string OldRootPath
     {
@@ -53,11 +55,17 @@ public class EditorControlViewModel : ObservableObject
 
     public EditorControlViewModel()
     {
+
+        _diffFileInfoFactory = new DiffFileInfoFactory();
+        _diffFileInfoFactory.AddRootPathInfoFactory(new DirectoryRootPathInfoFactory());
+        _diffFileInfoFactory.AddRootPathInfoFactory(new ZipRootPathInfoFactory());
+
         ReloadCommand = new RelayCommand(() =>
         {
-            if (!RootPathInfo.IsRootPath(OldRootPath)) { return; }
-            if (!RootPathInfo.IsRootPath(NewRootPath)) { return; }
-            var diffFileInfo = DiffFileInfoFactory.Factory(OldRootPath, NewRootPath);
+            if (!_diffFileInfoFactory.IsSupportRootPath(OldRootPath)) { return; }
+            if (!_diffFileInfoFactory.IsSupportRootPath(NewRootPath)) { return; }
+
+            var diffFileInfo = _diffFileInfoFactory.Create(OldRootPath, NewRootPath);
             FileInfoList.Clear();
             foreach (var path in diffFileInfo.Where(DiffStatusFilter))
             {
@@ -83,16 +91,7 @@ public class EditorControlViewModel : ObservableObject
             if (diffInfo is null) { return; }
             diffInfo.OpenDiffEditor((oldFullPath, newFullPath) =>
             {
-                var processArgument = diffInfo.Status switch
-                {
-                    DiffStatus.Add => $"/c code --diff {oldFullPath}",
-                    DiffStatus.Delete => $"/c code --diff {oldFullPath}",
-                    DiffStatus.Modified => $"/c code --diff {oldFullPath} {newFullPath}",
-                    DiffStatus.None => null,
-                    _ => throw new NotSupportedException("unknown status")
-                };
-                // 引数が無ければ終了
-                if (string.IsNullOrWhiteSpace(processArgument)) { return; }
+                var processArgument = $"/c code --diff {oldFullPath} {newFullPath}";
                 var processStartInfo = new ProcessStartInfo()
                 {
                     FileName = "C:\\WINDOWS\\system32\\cmd.exe",

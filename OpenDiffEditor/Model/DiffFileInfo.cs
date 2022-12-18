@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenDiffEditor.Model;
 
 public class DiffFileInfo
 {
-    private RootPathInfo OldRootPathInfo { get; }
-    private RootPathInfo NewRootPathInfo { get; }
+    private IRootPathInfo OldRootPathInfo { get; }
+    private IRootPathInfo NewRootPathInfo { get; }
 
 
     public string Path { get; }
@@ -18,7 +14,7 @@ public class DiffFileInfo
     public string StatusString => Status.ToStringLocal();
     public string StatusIcon => Status.ToIcon();
 
-    private DiffFileInfo(RootPathInfo oldPathInfo, RootPathInfo newPathInfo, string path, DiffStatus status)
+    private DiffFileInfo(IRootPathInfo oldPathInfo, IRootPathInfo newPathInfo, string path, DiffStatus status)
     {
         OldRootPathInfo = oldPathInfo;
         NewRootPathInfo = newPathInfo;
@@ -26,7 +22,7 @@ public class DiffFileInfo
         Status = status;
     }
 
-    public static DiffFileInfo Create(RootPathInfo oldRootPathInfo, RootPathInfo newRootPathInfo, string path)
+    public static DiffFileInfo Create(IRootPathInfo oldRootPathInfo, IRootPathInfo newRootPathInfo, string path)
     {
         // Diffステータス設定
         var oldFileIsExist = oldRootPathInfo.Exist(path);
@@ -48,17 +44,21 @@ public class DiffFileInfo
 
     public void OpenDiffEditor(ExecOpenEditor execOpenEditorCommand)
     {
-        var oldFullPath = OldRootPathInfo.Type switch
+        var oldFullPath = Status switch
         {
-            RootPathType.Directory => $"{OldRootPathInfo.RootPath}\\{Path}",
-            RootPathType.Zip => Util.CreateZipArchiveDataToTempFile(OldRootPathInfo.RootPath, Path.Trim('\\').Replace('\\', '/')),
-            _ => throw new NotSupportedException("zipとフォルダしか対応してません")
+            DiffStatus.Add => "",
+            DiffStatus.Delete => OldRootPathInfo.GetFilePathThatEditorCanOpen(Path),
+            DiffStatus.Modified => OldRootPathInfo.GetFilePathThatEditorCanOpen(Path),
+            DiffStatus.None => OldRootPathInfo.GetFilePathThatEditorCanOpen(Path),
+            _ => throw new NotSupportedException("unknown status")
         };
-        var newFullPath = NewRootPathInfo.Type switch
+        var newFullPath = Status switch
         {
-            RootPathType.Directory => $"{NewRootPathInfo.RootPath}\\{Path}",
-            RootPathType.Zip => Util.CreateZipArchiveDataToTempFile(NewRootPathInfo.RootPath, Path.Trim('\\').Replace('\\', '/')),
-            _ => throw new NotSupportedException("zipとフォルダしか対応してません")
+            DiffStatus.Add => NewRootPathInfo.GetFilePathThatEditorCanOpen(Path),
+            DiffStatus.Delete => "",
+            DiffStatus.Modified => NewRootPathInfo.GetFilePathThatEditorCanOpen(Path),
+            DiffStatus.None => NewRootPathInfo.GetFilePathThatEditorCanOpen(Path),
+            _ => throw new NotSupportedException("unknown status")
         };
         execOpenEditorCommand(oldFullPath, newFullPath);
     }
