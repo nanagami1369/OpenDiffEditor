@@ -24,7 +24,7 @@ public static class DiffStatusExpansion
             DiffStatus.Add => "追加",
             DiffStatus.Delete => "削除",
             DiffStatus.Modified => "変更",
-            _ => throw new ArgumentException("Unknown Status"),
+            _ => throw new NotSupportedException("unknown status")
         };
     }
 
@@ -36,7 +36,7 @@ public static class DiffStatusExpansion
             DiffStatus.Add => "🟨",
             DiffStatus.Delete => "🟥",
             DiffStatus.Modified => "🟩",
-            _ => throw new ArgumentException("Unknown Status"),
+            _ => throw new NotSupportedException("unknown status")
         };
     }
 }

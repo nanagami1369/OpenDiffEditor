@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -90,8 +91,8 @@ public class EditorControlViewModel : ObservableObject
                 DiffStatus.Add => $"/c code --diff {diffInfo.NewFullPath}",
                 DiffStatus.Delete => $"/c code --diff {diffInfo.OldFullPath}",
                 DiffStatus.Modified => $"/c code --diff {diffInfo.OldFullPath} {diffInfo.NewFullPath}",
-                // それ以外は、null
-                _ => null
+                DiffStatus.None => null,
+                _ => throw new NotSupportedException("unknown status")
             };
             // 引数が無ければ終了
             if (string.IsNullOrWhiteSpace(processArgument)) { return; }
@@ -113,7 +114,8 @@ public class EditorControlViewModel : ObservableObject
             DiffStatus.Add => IsFilterAdd,
             DiffStatus.Delete => IsFilterDelete,
             DiffStatus.Modified => IsFilterModified,
-            _ => false
+            DiffStatus.None => false,
+            _ => throw new NotSupportedException("unknown status")
         };
     }
 }
