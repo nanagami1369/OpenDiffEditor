@@ -12,6 +12,7 @@
 		<EnableMsixTooling>true</EnableMsixTooling>
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 		<WindowsPackageType>None</WindowsPackageType>
+		<AssemblyName>OpenDiffEditor</AssemblyName>
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="UI\EditorControl.xaml" />
