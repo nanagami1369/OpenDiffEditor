@@ -7,7 +7,7 @@ namespace OpenDiffEditor.Common.Factory;
 
 public class DiffFileInfoFactory
 {
-    private List<IRootPathInfoFactory> RootPathAccessSystemFactories = new();
+    private readonly List<IRootPathInfoFactory> RootPathAccessSystemFactories = new();
 
     public void AddRootPathInfoFactory(IRootPathInfoFactory factory)
     {
