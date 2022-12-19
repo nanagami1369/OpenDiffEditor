@@ -39,4 +39,17 @@ public static class DiffStatusExpansion
             _ => throw new NotSupportedException("unknown status")
         };
     }
+
+    public static string ToColor(this DiffStatus status)
+    {
+        return status switch
+        {
+            DiffStatus.None => "#e6e7e8",
+            DiffStatus.Add => "#fdcb58",
+            DiffStatus.Delete => "#dd2e44",
+            DiffStatus.Modified => "#78b159",
+            _ => throw new NotSupportedException("unknown status")
+        };
+    }
+
 }

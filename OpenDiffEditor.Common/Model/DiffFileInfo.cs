@@ -13,6 +13,7 @@ namespace OpenDiffEditor.Common.Model
         public DiffStatus Status { get; }
         public string StatusString => Status.ToStringLocal();
         public string StatusIcon => Status.ToIcon();
+        public string StatusColor => Status.ToColor();
 
         private DiffFileInfo(IRootPathInfo oldPathInfo, IRootPathInfo newPathInfo, string path, DiffStatus status)
         {
