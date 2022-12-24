@@ -3,14 +3,14 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using OpenDiffEditor.Common.Factory;
 using OpenDiffEditor.Common.Model;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace OpenDiffEditor.WPF.UI;
 
-public class EditorControlViewModel : ObservableObject
+public class EditorControlViewModel : BindableBase
 {
     private readonly DiffFileInfoFactory _diffFileInfoFactory;
 
@@ -49,11 +49,11 @@ public class EditorControlViewModel : ObservableObject
 
     public ObservableCollection<DiffFileInfo> FileInfoList { get; } = new ObservableCollection<DiffFileInfo>();
 
-    public IRelayCommand ReloadCommand { get; }
-    public IRelayCommand<string> DropOldRootPathCommand { get; }
-    public IRelayCommand<string> DropNewRootPathCommand { get; }
-    public IRelayCommand<DiffFileInfo> OpenVsCodeCommand { get; }
-    public IRelayCommand UsedLicenseCommand { get; }
+    public DelegateCommand ReloadCommand { get; }
+    public DelegateCommand<string> DropOldRootPathCommand { get; }
+    public DelegateCommand<string> DropNewRootPathCommand { get; }
+    public DelegateCommand<DiffFileInfo> OpenVsCodeCommand { get; }
+    public DelegateCommand UsedLicenseCommand { get; }
 
     public EditorControlViewModel()
     {
@@ -62,7 +62,7 @@ public class EditorControlViewModel : ObservableObject
         _diffFileInfoFactory.AddRootPathInfoFactory(new DirectoryRootPathInfoFactory());
         _diffFileInfoFactory.AddRootPathInfoFactory(new ZipRootPathInfoFactory());
 
-        ReloadCommand = new RelayCommand(() =>
+        ReloadCommand = new DelegateCommand(() =>
         {
             if (!_diffFileInfoFactory.IsSupportRootPath(OldRootPath)) { return; }
             if (!_diffFileInfoFactory.IsSupportRootPath(NewRootPath)) { return; }
@@ -74,21 +74,21 @@ public class EditorControlViewModel : ObservableObject
                 FileInfoList.Add(path);
             }
         });
-        DropOldRootPathCommand = new RelayCommand<string>((path) =>
+        DropOldRootPathCommand = new DelegateCommand<string>((path) =>
         {
             if (!string.IsNullOrWhiteSpace(path))
             {
                 OldRootPath = path;
             }
         });
-        DropNewRootPathCommand = new RelayCommand<string>((path) =>
+        DropNewRootPathCommand = new DelegateCommand<string>((path) =>
         {
             if (!string.IsNullOrWhiteSpace(path))
             {
                 NewRootPath = path;
             }
         });
-        OpenVsCodeCommand = new RelayCommand<DiffFileInfo>(diffInfo =>
+        OpenVsCodeCommand = new DelegateCommand<DiffFileInfo>(diffInfo =>
         {
             if (diffInfo is null) { return; }
             diffInfo.OpenDiffEditor((oldFullPath, newFullPath) =>
@@ -103,19 +103,17 @@ public class EditorControlViewModel : ObservableObject
                 Process.Start(processStartInfo);
             });
         });
-        UsedLicenseCommand = new RelayCommand(() =>
+        UsedLicenseCommand = new DelegateCommand(() =>
         {
-            var message = @".NET Community Toolkit
-            Copyright © .NET Foundation and Contributors
+            var message = @"The MIT License (MIT)
 
-All rights reserved.
-            MIT License(MIT)
+Copyright (c) Prism Library
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files(the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/ or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+All rights reserved. Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the ""Software""), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-            ";
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.";
             MessageBox.Show(message);
         });
     }

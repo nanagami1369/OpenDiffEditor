@@ -2,14 +2,14 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using OpenDiffEditor.Common.Factory;
 using OpenDiffEditor.Common.Model;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace OpenDiffEditor.WinUI3.UI;
 
-public class EditorControlViewModel : ObservableObject
+public class EditorControlViewModel : BindableBase
 {
     private readonly DiffFileInfoFactory _diffFileInfoFactory;
 
@@ -48,10 +48,10 @@ public class EditorControlViewModel : ObservableObject
 
     public ObservableCollection<DiffFileInfo> FileInfoList { get; } = new ObservableCollection<DiffFileInfo>();
 
-    public IRelayCommand ReloadCommand { get; }
-    public IRelayCommand<string> DropOldRootPathCommand { get; }
-    public IRelayCommand<string> DropNewRootPathCommand { get; }
-    public IRelayCommand<DiffFileInfo> OpenVsCodeCommand { get; }
+    public DelegateCommand ReloadCommand { get; }
+    public DelegateCommand<string> DropOldRootPathCommand { get; }
+    public DelegateCommand<string> DropNewRootPathCommand { get; }
+    public DelegateCommand<DiffFileInfo> OpenVsCodeCommand { get; }
 
     public EditorControlViewModel()
     {
@@ -60,7 +60,7 @@ public class EditorControlViewModel : ObservableObject
         _diffFileInfoFactory.AddRootPathInfoFactory(new DirectoryRootPathInfoFactory());
         _diffFileInfoFactory.AddRootPathInfoFactory(new ZipRootPathInfoFactory());
 
-        ReloadCommand = new RelayCommand(() =>
+        ReloadCommand = new DelegateCommand(() =>
         {
             if (!_diffFileInfoFactory.IsSupportRootPath(OldRootPath)) { return; }
             if (!_diffFileInfoFactory.IsSupportRootPath(NewRootPath)) { return; }
@@ -72,21 +72,21 @@ public class EditorControlViewModel : ObservableObject
                 FileInfoList.Add(path);
             }
         });
-        DropOldRootPathCommand = new RelayCommand<string>((path) =>
+        DropOldRootPathCommand = new DelegateCommand<string>((path) =>
         {
             if (!string.IsNullOrWhiteSpace(path))
             {
                 OldRootPath = path;
             }
         });
-        DropNewRootPathCommand = new RelayCommand<string>((path) =>
+        DropNewRootPathCommand = new DelegateCommand<string>((path) =>
         {
             if (!string.IsNullOrWhiteSpace(path))
             {
                 NewRootPath = path;
             }
         });
-        OpenVsCodeCommand = new RelayCommand<DiffFileInfo>(diffInfo =>
+        OpenVsCodeCommand = new DelegateCommand<DiffFileInfo>(diffInfo =>
         {
             if (diffInfo is null) { return; }
             diffInfo.OpenDiffEditor((oldFullPath, newFullPath) =>
