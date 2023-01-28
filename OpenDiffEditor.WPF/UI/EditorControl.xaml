@@ -3,8 +3,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:b="clr-namespace:OpenDiffEditor.WPF.UI.Behavior"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:c="clr-namespace:OpenDiffEditor.WPF.UI.Converter"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:OpenDiffEditor.Common.Model;assembly=OpenDiffEditor.Common"
     xmlns:ui="clr-namespace:OpenDiffEditor.WPF.UI"
@@ -14,6 +14,16 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <c:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+        <VisualBrush
+            x:Key="PathPlaceholderTextBrush"
+            AlignmentX="Left"
+            Stretch="None">
+            <VisualBrush.Visual>
+                <Border Background="Transparent">
+                    <TextBlock Margin="5,0" FontSize="14px" Foreground="#969696" Text="C:\User\HogeHoge\Desktop" />
+                </Border>
+            </VisualBrush.Visual>
+        </VisualBrush>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -42,17 +52,38 @@
                 Grid.Column="1"
                 VerticalContentAlignment="Center"
                 b:FilePathDropAttachedProperty.Command="{Binding DropOldRootPathCommand}"
-                Background="Transparent"
                 FontSize="14px"
-                Text="{Binding OldRootPath, Mode=TwoWay}" />
+                Text="{Binding OldRootPath, Mode=TwoWay}">
+                <TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Style.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter Property="Background" Value="{StaticResource PathPlaceholderTextBrush}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
             <TextBox
                 Grid.Row="1"
                 Grid.Column="1"
                 VerticalContentAlignment="Center"
                 b:FilePathDropAttachedProperty.Command="{Binding DropNewRootPathCommand}"
-                Background="Transparent"
+                Background="{StaticResource PathPlaceholderTextBrush}"
                 FontSize="14px"
-                Text="{Binding NewRootPath, Mode=TwoWay}" />
+                Text="{Binding NewRootPath, Mode=TwoWay}">
+                <TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Style.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter Property="Background" Value="{StaticResource PathPlaceholderTextBrush}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
         </Grid>
         <StackPanel
             Grid.Row="2"
