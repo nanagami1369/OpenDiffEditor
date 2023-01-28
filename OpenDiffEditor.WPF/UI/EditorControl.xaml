@@ -14,16 +14,6 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <c:ColorToBrushConverter x:Key="ColorToBrushConverter" />
-        <VisualBrush
-            x:Key="PathPlaceholderTextBrush"
-            AlignmentX="Left"
-            Stretch="None">
-            <VisualBrush.Visual>
-                <Border Background="Transparent">
-                    <TextBlock Margin="5,0" FontSize="14px" Foreground="#969696" Text="C:\User\HogeHoge\Desktop" />
-                </Border>
-            </VisualBrush.Visual>
-        </VisualBrush>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -52,38 +42,17 @@
                 Grid.Column="1"
                 VerticalContentAlignment="Center"
                 b:FilePathDropAttachedProperty.Command="{Binding DropOldRootPathCommand}"
+                Background="Transparent"
                 FontSize="14px"
-                Text="{Binding OldRootPath, Mode=TwoWay}">
-                <TextBox.Style>
-                    <Style TargetType="{x:Type TextBox}">
-                        <Setter Property="Background" Value="Transparent" />
-                        <Style.Triggers>
-                            <Trigger Property="Text" Value="">
-                                <Setter Property="Background" Value="{StaticResource PathPlaceholderTextBrush}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
+                Text="{Binding OldRootPath, Mode=TwoWay}" />
             <TextBox
                 Grid.Row="1"
                 Grid.Column="1"
                 VerticalContentAlignment="Center"
                 b:FilePathDropAttachedProperty.Command="{Binding DropNewRootPathCommand}"
-                Background="{StaticResource PathPlaceholderTextBrush}"
+                Background="Transparent"
                 FontSize="14px"
-                Text="{Binding NewRootPath, Mode=TwoWay}">
-                <TextBox.Style>
-                    <Style TargetType="{x:Type TextBox}">
-                        <Setter Property="Background" Value="Transparent" />
-                        <Style.Triggers>
-                            <Trigger Property="Text" Value="">
-                                <Setter Property="Background" Value="{StaticResource PathPlaceholderTextBrush}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
+                Text="{Binding NewRootPath, Mode=TwoWay}" />
         </Grid>
         <StackPanel
             Grid.Row="2"
