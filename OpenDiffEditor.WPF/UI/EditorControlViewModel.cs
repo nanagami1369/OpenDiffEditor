@@ -92,7 +92,10 @@ public class EditorControlViewModel : BindableBase
             if (diffInfo is null) { return; }
             diffInfo.OpenDiffEditor((oldFullPath, newFullPath) =>
             {
-                var processArgument = $"/c code --diff {oldFullPath} {newFullPath}";
+                var diffCommand = Properties.Settings.Default.DiffCommand
+                                    .Replace("{old}", oldFullPath)
+                                    .Replace("{new}", newFullPath);
+                var processArgument = $"/c {diffCommand}";
                 var processStartInfo = new ProcessStartInfo()
                 {
                     FileName = "C:\\WINDOWS\\system32\\cmd.exe",
