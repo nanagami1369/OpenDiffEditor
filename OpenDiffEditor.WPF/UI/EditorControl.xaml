@@ -18,8 +18,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="30px" />
-            <RowDefinition Height="30px" />
+            <RowDefinition Height="60px" />
             <RowDefinition Height="30px" />
             <RowDefinition Height="30px" />
             <RowDefinition Height="*" />
@@ -27,20 +26,36 @@
         <Menu Grid.Row="0">
             <MenuItem Header="OSSライセンス" Command="{Binding UsedLicenseCommand}"></MenuItem>
         </Menu>
-        <TextBox
-                Grid.Row="1"
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30px" />
+                <RowDefinition Height="30px" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30px" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center">旧</Label>
+            <Label Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center">新</Label>
+            <TextBox
+                Grid.Row="0"
+                Grid.Column="1"
+                VerticalContentAlignment="Center"
                 b:FilePathDropAttachedProperty.Command="{Binding DropOldRootPathCommand}"
                 Background="Transparent"
                 FontSize="14px"
                 Text="{Binding OldRootPath, Mode=TwoWay}" />
-        <TextBox
-                Grid.Row="2"
+            <TextBox
+                Grid.Row="1"
+                Grid.Column="1"
+                VerticalContentAlignment="Center"
                 b:FilePathDropAttachedProperty.Command="{Binding DropNewRootPathCommand}"
                 Background="Transparent"
                 FontSize="14px"
                 Text="{Binding NewRootPath, Mode=TwoWay}" />
+        </Grid>
         <StackPanel
-            Grid.Row="3"
+            Grid.Row="2"
             HorizontalAlignment="Stretch"
             Orientation="Horizontal">
             <CheckBox
@@ -57,7 +72,7 @@
                 IsChecked="{Binding IsFilterModified, Mode=TwoWay}" />
         </StackPanel>
         <Button
-            Grid.Row="4"
+            Grid.Row="3"
             HorizontalAlignment="Stretch"
             Command="{Binding ReloadCommand}"
             Content="更新"
