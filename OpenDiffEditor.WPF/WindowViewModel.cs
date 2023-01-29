@@ -60,14 +60,23 @@ namespace OpenDiffEditor.WPF
             set => SetProperty(ref _diffCommand, value);
         }
 
+        private string _argument = "";
+        public string Argument
+        {
+            get => _argument;
+            set => SetProperty(ref _argument, value);
+        }
+
         public void LoadSetting()
         {
             DiffCommand = Properties.Settings.Default.DiffCommand;
+            Argument = Properties.Settings.Default.Argument;
         }
 
         public void SaveSetting()
         {
             Properties.Settings.Default.DiffCommand = DiffCommand;
+            Properties.Settings.Default.Argument = Argument;
             Properties.Settings.Default.Save();
         }
 

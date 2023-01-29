@@ -25,13 +25,25 @@ namespace OpenDiffEditor.WPF.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("code --diff {old} {new}")]
+        [global::System.Configuration.DefaultSettingValueAttribute("%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\bin\\code.cmd")]
         public string DiffCommand {
             get {
                 return ((string)(this["DiffCommand"]));
             }
             set {
                 this["DiffCommand"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(" --diff {old} {new}")]
+        public string Argument {
+            get {
+                return ((string)(this["Argument"]));
+            }
+            set {
+                this["Argument"] = value;
             }
         }
     }

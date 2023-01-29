@@ -3,7 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="DiffCommand" Type="System.String" Scope="User">
-      <Value Profile="(Default)">code --diff {old} {new}</Value>
+      <Value Profile="(Default)">%LOCALAPPDATA%\Programs\Microsoft VS Code\bin\code.cmd</Value>
+    </Setting>
+    <Setting Name="Argument" Type="System.String" Scope="User">
+      <Value Profile="(Default)"> --diff {old} {new}</Value>
     </Setting>
   </Settings>
 </SettingsFile>
